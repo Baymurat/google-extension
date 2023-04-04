@@ -21,7 +21,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [randomString, setRandomString] = useState<string>('')
 
   useEffect(() => {
-    const randomString = localStorage.removeItem("randomString")
+    const randomString = localStorage.getItem("randomString")
     if (randomString != null) {
       setIsInitialized(true)
       setRandomString(randomString)
