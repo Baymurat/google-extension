@@ -11,6 +11,7 @@ interface AuthContextType {
   isAuthorized: boolean
   setAuthorizedState: (state: string | null) => Promise<boolean>
   setInitializedState: (state: string | null) => Promise<boolean>
+  regenerateRandomString: () => void
 }
 
 const AuthContext = React.createContext<AuthContextType | null>(null)
@@ -81,6 +82,12 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     return Promise.resolve(true)
   }
 
+  const regenerateRandomString = () => {
+    const randomString = generateRandomString()
+    localStorage.setItem("randomString", randomString)
+    setRandomString(randomString)
+  }
+
   return (
     <AuthContext.Provider value={{
       randomString,
@@ -88,6 +95,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
       isInitialized,
       setAuthorizedState,
       setInitializedState,
+      regenerateRandomString,
     }}>
       {children}
     </AuthContext.Provider>

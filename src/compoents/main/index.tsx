@@ -1,9 +1,9 @@
-import { Box, Typography, Button } from '@mui/material'
+import { Box, Typography, Button, Divider } from '@mui/material'
 
 import { useAuthContext } from "../../context/authContext"
 
 const MainPage = () => {
-  const { randomString, setAuthorizedState } = useAuthContext()
+  const { randomString, setAuthorizedState, regenerateRandomString } = useAuthContext()
 
   return (
     <Box
@@ -19,10 +19,20 @@ const MainPage = () => {
       </Typography>
       {randomString}
       <Button
+        fullWidth
+        variant='contained'
+        onClick={regenerateRandomString}
+      >
+        Regenrate random string
+      </Button>
+      <Divider sx={{ width: '100%' }}>OR</Divider>
+      <Button
+        fullWidth
+        variant='contained'
+        color="warning"
         onClick={() => {
           setAuthorizedState(null)
         }}
-        variant='contained'
       >
         Log out
       </Button>

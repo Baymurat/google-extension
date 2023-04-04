@@ -1,4 +1,4 @@
-import { Box, TextField, Button, FormHelperText, FormControl, Typography } from '@mui/material'
+import { Box, TextField, Button, FormHelperText, FormControl, Typography, Divider } from '@mui/material'
 import { useState } from 'react'
 
 import { useAuthContext } from '../../context/authContext'
@@ -46,7 +46,7 @@ const LoginPage = () => {
       <Button fullWidth type='submit' variant='contained' color='success'>
         Login
       </Button>
-      or
+      <Divider sx={{ width: '100%' }}>OR</Divider>
       <Button
         fullWidth
         variant='contained'
@@ -55,7 +55,7 @@ const LoginPage = () => {
           setInitializedState(null)
         }}
       >
-        Reset random string
+        Full reset
       </Button>
     </Box>
   )
