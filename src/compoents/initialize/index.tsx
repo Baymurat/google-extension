@@ -13,8 +13,13 @@ const InitializePage = () => {
     if (password !== confirmPassword) {
       setIsError(true)
     } else {
-      setIsError(false)
-      setInitializedState(true)
+      setInitializedState(password)
+        .then(() => {
+          setIsError(false)
+        })
+        .catch(() => {
+          setIsError(true)
+        })
     }
   }
 

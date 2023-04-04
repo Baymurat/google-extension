@@ -12,6 +12,8 @@ const App = () => {
     renderComponent = (<InitializePage />)
   } else if (!isAuthorized) {
     renderComponent = (<LoginPage />)
+  } else {
+    renderComponent = <div>LOGGED IN</div>
   }
 
   return (
