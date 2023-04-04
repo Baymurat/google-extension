@@ -1,4 +1,4 @@
-import { Box, TextField, Button, FormHelperText, FormControl } from '@mui/material'
+import { Box, TextField, Button, FormHelperText, FormControl, Typography } from '@mui/material'
 import { useState } from 'react'
 import { useAuthContext } from '../../context/authContext'
 
@@ -33,6 +33,7 @@ const InitializePage = () => {
       component="form"
       onSubmit={handleSubmit}
     >
+      <Typography variant='h5'>Initialize App</Typography>
       <TextField
         onChange={({ target }) => setPassword(target.value)}
         value={password}
