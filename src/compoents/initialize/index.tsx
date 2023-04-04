@@ -1,10 +1,12 @@
 import { Box, TextField, Button, FormHelperText, FormControl } from '@mui/material'
 import { useState } from 'react'
+import { useAuthContext } from '../../context/authContext'
 
 const InitializePage = () => {
   const [isError, setIsError] = useState<boolean>(false)
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
+  const { setInitializedState } = useAuthContext()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -12,6 +14,7 @@ const InitializePage = () => {
       setIsError(true)
     } else {
       setIsError(false)
+      setInitializedState(true)
     }
   }
 
