@@ -1,4 +1,4 @@
-import React, { FC, PropsWithChildren, useContext, useState } from 'react';
+import React, { FC, PropsWithChildren, useContext, useState, useEffect } from 'react';
 import bcrypt from 'bcryptjs'
 
 import { generateRandomString } from '../utils/generateRandom';
@@ -6,6 +6,7 @@ import { generateRandomString } from '../utils/generateRandom';
 const salt = bcrypt.genSaltSync(10)
 
 interface AuthContextType {
+  randomString: string
   isInitialized: boolean
   isAuthorized: boolean
   setAuthorizedState: (state: string | null) => Promise<boolean>
@@ -17,10 +18,20 @@ const AuthContext = React.createContext<AuthContextType | null>(null)
 export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false)
   const [isInitialized, setIsInitialized] = useState<boolean>(false)
+  const [randomString, setRandomString] = useState<string>('')
+
+  useEffect(() => {
+    const randomString = localStorage.removeItem("randomString")
+    if (randomString != null) {
+      setIsInitialized(true)
+      setRandomString(randomString)
+    }
+  }, [])
 
   const setAuthorizedState = (password: string | null): Promise<boolean> => {
     if (password === null) {
-      return Promise.reject()
+      setIsAuthorized(false)
+      return Promise.resolve(true)
     }
 
     const passwordHash = localStorage.getItem("passwordHash")
@@ -65,12 +76,14 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     localStorage.setItem("randomString", randomString)
 
     setIsInitialized(true)
+    setRandomString(randomString)
 
     return Promise.resolve(true)
   }
 
   return (
     <AuthContext.Provider value={{
+      randomString,
       isAuthorized,
       isInitialized,
       setAuthorizedState,

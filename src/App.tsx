@@ -1,6 +1,7 @@
 import { Box } from '@mui/material'
 import InitializePage from './compoents/initialize';
 import LoginPage from './compoents/login';
+import MainPage from './compoents/main';
 import { useAuthContext } from './context/authContext';
 
 const App = () => {
@@ -13,7 +14,7 @@ const App = () => {
   } else if (!isAuthorized) {
     renderComponent = (<LoginPage />)
   } else {
-    renderComponent = <div>LOGGED IN</div>
+    renderComponent = (<MainPage />)
   }
 
   return (
