@@ -1,5 +1,8 @@
+import crypto from 'crypto-js'
+
 const ABC = 'abcdefghijklmnopqrstuvwyzABCDEFGHIJKLMNOPQRSTUVWYZ'
 const abcLength = ABC.length
+const secret = 'some-long-secret-key'
 
 export const generateRandomString = (length: number = 10): string => {
   let result = ''
@@ -9,4 +12,13 @@ export const generateRandomString = (length: number = 10): string => {
     result += ABC[nextIndex]
   }
   return result
+}
+
+export const encrypt = (target: string): string => {
+  return crypto.AES.encrypt(target, secret).toString()
+}
+
+export const decrypt = (ciphertext: string): string => {
+  const bytes = crypto.AES.decrypt(ciphertext, secret)
+  return bytes.toString(crypto.enc.Utf8)
 }

@@ -1,7 +1,7 @@
 import React, { FC, PropsWithChildren, useContext, useState, useEffect } from 'react';
 import bcrypt from 'bcryptjs'
 
-import { generateRandomString } from '../utils/generateRandom';
+import { generateRandomString, encrypt, decrypt } from '../utils/generateRandom';
 
 const salt = bcrypt.genSaltSync(10)
 
@@ -25,7 +25,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     const randomString = localStorage.getItem("randomString")
     if (randomString != null) {
       setIsInitialized(true)
-      setRandomString(randomString)
+      setRandomString(decrypt(randomString))
     }
   }, [])
 
@@ -74,7 +74,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     const randomString = generateRandomString()
     const passwordHash = bcrypt.hashSync(password, salt)
     localStorage.setItem('passwordHash', passwordHash)
-    localStorage.setItem("randomString", randomString)
+    localStorage.setItem("randomString", encrypt(randomString))
 
     setIsInitialized(true)
     setRandomString(randomString)
@@ -84,7 +84,7 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
 
   const regenerateRandomString = () => {
     const randomString = generateRandomString()
-    localStorage.setItem("randomString", randomString)
+    localStorage.setItem("randomString", encrypt(randomString))
     setRandomString(randomString)
   }
 
