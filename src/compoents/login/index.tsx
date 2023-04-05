@@ -1,22 +1,18 @@
 import { Box, TextField, Button, FormHelperText, FormControl, Typography, Divider } from '@mui/material'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
-import { useAuthContext } from '../../context/authContext'
+import { handleAuthenticate, handleFullReset } from '../../redux/features/auth/authSlice'
 
 const LoginPage = () => {
   const [isError, setIsError] = useState<boolean>(false)
   const [password, setPassword] = useState<string>('')
-  const { setAuthorizedState, setInitializedState } = useAuthContext()
+
+  const dispatcher = useDispatch()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setAuthorizedState(password)
-      .then(() => {
-        setIsError(false)
-      })
-      .catch(() => {
-        setIsError(true)
-      })
+    dispatcher(handleAuthenticate({ password }))
   }
 
   return (
@@ -52,7 +48,7 @@ const LoginPage = () => {
         variant='contained'
         color='warning'
         onClick={() => {
-          setInitializedState(null)
+          dispatcher(handleFullReset())
         }}
       >
         Full reset

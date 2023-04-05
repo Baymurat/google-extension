@@ -1,25 +1,22 @@
 import { Box, TextField, Button, FormHelperText, FormControl, Typography } from '@mui/material'
 import { useState } from 'react'
-import { useAuthContext } from '../../context/authContext'
+import { useDispatch } from 'react-redux'
+
+import { handleInitialize } from '../../redux/features/auth/authSlice'
 
 const InitializePage = () => {
   const [isError, setIsError] = useState<boolean>(false)
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
-  const { setInitializedState } = useAuthContext()
+
+  const dispatcher = useDispatch()
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (password !== confirmPassword) {
       setIsError(true)
     } else {
-      setInitializedState(password)
-        .then(() => {
-          setIsError(false)
-        })
-        .catch(() => {
-          setIsError(true)
-        })
+      dispatcher(handleInitialize({ password }))
     }
   }
 

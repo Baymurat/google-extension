@@ -38,6 +38,9 @@ const authSlice = createSlice({
     handleFullReset(state) {
       state.isInitialized = false
       state.isAuthenticated = false
+      worker.postMessage({
+        eventName: "fullReset"
+      })
     },
     handleLogout(state) {
       state.isAuthenticated = false

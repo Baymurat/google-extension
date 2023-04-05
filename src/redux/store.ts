@@ -1,6 +1,6 @@
 import { configureStore, createListenerMiddleware } from "@reduxjs/toolkit";
 
-import secretStateReducer, { setSecret } from "./features/secret/secretSlice";
+import secretStateReducer, { setSecret, getSecret } from "./features/secret/secretSlice";
 import authStateReducer, { setIsAuthenticated, setIsInitialized } from "./features/auth/authSlice";
 import workerStateReducer, { workerEvent } from "./features/worker/workerSlice";
 
@@ -11,7 +11,11 @@ listenerMiddleware.startListening({
   effect: async (action, listenerApi) => {
     const { actionName, payload } = action.payload
 
-    if (actionName === 'initializeApp') {
+    if (actionName === 'init') {
+      listenerApi.dispatch(getSecret())
+    }
+
+    if (actionName === 'initializeApp' || actionName === 'getSecret') {
       const { secret, isInitialized } = payload
       listenerApi.dispatch(setSecret({ secret }))
       listenerApi.dispatch(setIsInitialized({ isInitialized }))
@@ -20,6 +24,11 @@ listenerMiddleware.startListening({
     if (actionName === 'regenerate') {
       const { secret } = payload
       listenerApi.dispatch(setSecret({ secret }))
+    }
+
+    if (actionName === 'fullReset') {
+      listenerApi.dispatch(setIsInitialized({ isInitialized: false }))
+      listenerApi.dispatch(setIsAuthenticated({ isAuthenticated: false }))
     }
 
     if (actionName === 'authenticate') {

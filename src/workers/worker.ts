@@ -23,10 +23,6 @@ req.onupgradeneeded = (e) => {
   db.createObjectStore(TABLE_NAME)
 }
 
-req.onsuccess = () => {
-  console.log('SUCCESS');
-  db = req.result
-}
 
 req.onerror = (e) => {
   console.log('ERROR', e);
@@ -39,6 +35,20 @@ req.onblocked = () => {
 self.onmessage = (e: MessageEvent<EventType>) => {
 
   const { eventName, payload } = e.data
+
+  if (eventName === 'init') {
+    req.onsuccess = () => {
+      db = req.result
+      self.postMessage({
+        actionName: "init"
+      })
+    }
+  }
+
+  if (!db) {
+    self.postMessage('Database is not initialized')
+    return
+  }
 
   if (eventName === 'initializeApp') {
     const secret = generateRandomString()
@@ -67,8 +77,11 @@ self.onmessage = (e: MessageEvent<EventType>) => {
     }
 
     getRequest.onsuccess = () => {
-      response.payload.secret = decrypt(getRequest.result)
-      response.payload.isInitialized = true
+      const encrypted = getRequest.result
+      if (encrypted) {
+        response.payload.secret = decrypt(encrypted)
+        response.payload.isInitialized = true
+      }
       self.postMessage(response);
     }
 
@@ -92,8 +105,14 @@ self.onmessage = (e: MessageEvent<EventType>) => {
     }
   }
 
+  if (eventName === 'fullReset') {
+    db.transaction(TABLE_NAME, "readwrite").objectStore(TABLE_NAME).delete(PASSWORD_KEY)
+    db.transaction(TABLE_NAME, "readwrite").objectStore(TABLE_NAME).delete(SECRET_KEY)
+    self.postMessage({ actionName: 'fullReset' })
+  }
+
   if (eventName === 'authenticate') {
-    const getRequest = db.transaction(TABLE_NAME, "readonly").objectStore(TABLE_NAME).get("passwordHash")
+    const getRequest = db.transaction(TABLE_NAME, "readonly").objectStore(TABLE_NAME).get(PASSWORD_KEY)
     const response = {
       actionName: "authenticate",
       payload: { isAuthenticated: false }

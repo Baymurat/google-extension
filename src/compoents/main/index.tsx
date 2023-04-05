@@ -1,9 +1,12 @@
 import { Box, Typography, Button, Divider } from '@mui/material'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { useAuthContext } from "../../context/authContext"
+import { secretSelector, regenerateSecret } from '../../redux/features/secret/secretSlice'
+import { handleLogout } from '../../redux/features/auth/authSlice'
 
 const MainPage = () => {
-  const { randomString, setAuthorizedState, regenerateRandomString } = useAuthContext()
+  const secret = useSelector(secretSelector)
+  const dispatcher = useDispatch()
 
   return (
     <Box
@@ -17,11 +20,13 @@ const MainPage = () => {
       <Typography variant='h5'>
         {"Your random string is: "}
       </Typography>
-      {randomString}
+      {secret}
       <Button
         fullWidth
         variant='contained'
-        onClick={regenerateRandomString}
+        onClick={() => {
+          dispatcher(regenerateSecret())
+        }}
       >
         Regenrate random string
       </Button>
@@ -31,7 +36,7 @@ const MainPage = () => {
         variant='contained'
         color="warning"
         onClick={() => {
-          setAuthorizedState(null)
+          dispatcher(handleLogout())
         }}
       >
         Log out
